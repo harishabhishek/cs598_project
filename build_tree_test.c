@@ -8,26 +8,23 @@
 #define DATA 2 // Message giving vector to sort
 #define ANSW 3 // Message returning sorted vector
 
-int compare (const void * a, const void * b)
-{
-   return ( *(int*)a - *(int*)b );
-}
 
-void communicate ( int myHeight, int myRank )
-{  int parent = myRank & ~(1<<myHeight);
 
-   if ( myHeight > 0 )
-   {  int nxt     = myHeight - 1;
-      int rtChild = myRank | ( 1 << nxt );
+// void communicate ( int myHeight, int myRank )
+// {  int parent = myRank & ~(1<<myHeight);
 
-      printf ("%d sending data to %d\n", myRank, rtChild);
-      communicate ( nxt, myRank );
-      communicate ( nxt, rtChild );
-      printf ("%d getting data from %d\n", myRank, rtChild);
-   }
-   if ( parent != myRank )
-      printf ("%d transmitting to %d\n", myRank, parent);
-}
+//    if ( myHeight > 0 )
+//    {  int nxt     = myHeight - 1;
+//       int rtChild = myRank | ( 1 << nxt );
+
+//       printf ("%d sending data to %d\n", myRank, rtChild);
+//       communicate ( nxt, myRank );
+//       communicate ( nxt, rtChild );
+//       printf ("%d getting data from %d\n", myRank, rtChild);
+//    }
+//    if ( parent != myRank )
+//       printf ("%d transmitting to %d\n", myRank, parent);
+// }
 
 /**
  * Partitioned merge logic
@@ -38,47 +35,52 @@ void communicate ( int myHeight, int myRank )
  *
  * Leaf level nodes just sort the vector.
  */
-void partitionedSort ( long *vector, int size, int myHeight, int mySelf )
-{  int parent,
-       rtChild;
-   int nxt;
+// void partitionedSort ( char *vector, int size, int myHeight, int mySelf )
+// {  int parent,
+//        rtChild;
+//    int nxt;
 
-   parent = mySelf & ~(1 << myHeight);
-   nxt = myHeight - 1;
-   rtChild = mySelf | ( 1 << nxt );
+//    parent = mySelf & ~(1 << myHeight);
+//    nxt = myHeight - 1;
+//    rtChild = mySelf | ( 1 << nxt );
 
-   if ( myHeight > 0 )
-   {
-      int   left_size  = size / 2,
-            right_size = size - left_size;
-      long *leftArray  = (long*) calloc (left_size, sizeof *leftArray),
-           *rightArray = (long*) calloc (right_size, sizeof *rightArray);
-      int   i, j, k;                   // Used in the merge logic
+//    if ( myHeight > 0 )
+//    {
+//       int   left_size  = size / 2,
+//             right_size = size - left_size;
+//       char *leftArray  = (char*) calloc (left_size, sizeof *leftArray),
+//            *rightArray = (char*) calloc (right_size, sizeof *rightArray);
+//       int   i, j, k;                   // Used in the merge logic
 
-      memcpy (leftArray, vector, left_size*sizeof *leftArray);
-      memcpy (rightArray, vector+left_size, right_size*sizeof *rightArray);
+//       memcpy (leftArray, vector, left_size*sizeof *leftArray);
+//       memcpy (rightArray, vector+left_size, right_size*sizeof *rightArray);
 
-      partitionedSort ( leftArray, left_size, nxt, mySelf );
-      partitionedSort ( rightArray, right_size, nxt, rtChild );
+//       partitionedSort ( leftArray, left_size, nxt, mySelf );
+//       partitionedSort ( rightArray, right_size, nxt, rtChild );
 
-      // Merge the two results back into vector
-      i = j = k = 0;
-      while ( i < left_size && j < right_size )
-         if ( leftArray[i] > rightArray[j])
-            vector[k++] = rightArray[j++];
-         else
-            vector[k++] = leftArray[i++];
-      while ( i < left_size )
-         vector[k++] = leftArray[i++];
-      while ( j < right_size )
-         vector[k++] = rightArray[j++];
-      free(leftArray);  free(rightArray);   // No memory leak!
-   }
-   else
-      qsort( vector, size, sizeof *vector, compare );
+//       // Merge the two results back into vector
+//       i = j = k = 0;
+//       while ( i < left_size && j < right_size )
+//          if ( leftArray[i] > rightArray[j])
+//             vector[k++] = rightArray[j++];
+//          else
+//             vector[k++] = leftArray[i++];
+//       while ( i < left_size )
+//          vector[k++] = leftArray[i++];
+//       while ( j < right_size )
+//          vector[k++] = rightArray[j++];
+//       free(leftArray);  free(rightArray);   // No memory leak!
+//    }
+//    else
+//       qsort( vector, size, sizeof *vector, compare );
+// }
+
+int compare (const void * a, const void * b)
+{
+   return ( *(char*)a - *(char*)b );
 }
 
-void parallelMerge ( long *vector, int size, int myHeight )
+void parallelMerge ( char *vector, long size, int myHeight )
 {  int parent;
    int myRank, nProc;
    int rc, nxt, rtChild;
@@ -98,9 +100,9 @@ void parallelMerge ( long *vector, int size, int myHeight )
       {
          int   left_size  = size / 2,
                right_size = size - left_size;
-         long *leftArray  = (long*) calloc (left_size,
+         char *leftArray  = (char*) calloc (left_size,
                                             sizeof *leftArray),
-              *rightArray = (long*) calloc (right_size,
+              *rightArray = (char*) calloc (right_size,
                                             sizeof *rightArray);
          int   iVect[2];
          int   i, j, k;                // Used in the merge logic
@@ -114,11 +116,11 @@ void parallelMerge ( long *vector, int size, int myHeight )
          iVect[1] = nxt;
          rc = MPI_Send( iVect, 2, MPI_INT, rtChild, INIT,
               MPI_COMM_WORLD);
-         rc = MPI_Send( rightArray, right_size, MPI_LONG, rtChild,
+         rc = MPI_Send( rightArray, right_size, MPI_CHAR, rtChild,
               DATA, MPI_COMM_WORLD);
 
          parallelMerge ( leftArray, left_size, nxt );
-         rc = MPI_Recv( rightArray, right_size, MPI_LONG, rtChild,
+         rc = MPI_Recv( rightArray, right_size, MPI_CHAR, rtChild,
               ANSW, MPI_COMM_WORLD, &status );
 
          // Merge the two results back into vector
@@ -138,23 +140,44 @@ void parallelMerge ( long *vector, int size, int myHeight )
       qsort( vector, size, sizeof *vector, compare );
 
    if ( parent != myRank )
-      rc = MPI_Send( vector, size, MPI_LONG, parent, ANSW,
+      rc = MPI_Send( vector, size, MPI_CHAR, parent, ANSW,
            MPI_COMM_WORLD );
 }
 
 
-void getData(long *vector,  long *size, char [] file_name){
 
-	FILE *fp;
-	return;
+long getSize(char *file_name){
+  FILE *fp;
+  char *mode = "r";
+  fp = fopen(file_name, mode);
+  fseek(fp, 0L, SEEK_END);
+  return ftell(fp);
 }
 
-void writeFile(char *vector, long *size, char [] file_name){
-	
+void getData(char *vector, long size, char* file_name){
+
+  size_t n = 0;
+  FILE *fp;
+  char *mode = "r";
+  fp = fopen(file_name, mode);
+  char c;
+  while ((c = fgetc(fp)) != EOF)
+  {
+      vector[n++] = (char) c;
+  }
+  qsort(vector, size, sizeof(char), compare);
+
+
+}
+
+void writeFile(char *vector, long size, char* file_name){
+
+  FILE *file = fopen(file_name, "w");
+  int results = fputs(vector, file);
+  fclose(file);
 }
 
 int main(int argc, char** argv) {
-	char [] file_name = argv[0]
     // Initialize the MPI environment
     MPI_Status stat;
 
@@ -176,8 +199,8 @@ int main(int argc, char** argv) {
     MPI_Get_processor_name(processor_name, &name_len);
 
     long size;
-    long * vector;
-    long *solo;
+    char * vector;
+    char *solo;
     double start, middle, finish;
     int rc;
 
@@ -192,15 +215,21 @@ int main(int argc, char** argv) {
 	      {  nodeCount += nodeCount; rootHt++;  }
 
 	      printf ("%d processes mandates root height of %d\n", nProc, rootHt);
+        char *input_file_name = argv[1];
+        char *output_file_name = argv[2];
 
-	      getData (vector, &size, file_name);   // The vector to be sorted.
+	      long size = getSize(input_file_name);
+        printf("%d\n", size);
+        char *vector = malloc((size+1) * sizeof(char));
+
+        getData(vector, size, input_file_name);
 
 	   	  // Capture time to sequentially sort the idential array
-	      solo = (long*) calloc (size, sizeof *solo );
+	      solo = (char*) calloc (size, sizeof *solo );
 	      memcpy (solo, vector, size * sizeof *solo);
 
 	      start = MPI_Wtime();
-	      parallelMerge ( vector, size, rootHt);
+	      parallelMerge (vector, size, rootHt);
 	      middle = MPI_Wtime();
 	   }
 	   else                      // Node process
@@ -214,17 +243,17 @@ int main(int argc, char** argv) {
 	           MPI_COMM_WORLD, &status );
 	      size   = iVect[0];     // Isolate size
 	      height = iVect[1];     // and height
-	      vector = (long*) calloc (size, sizeof *vector);
-	      rc = MPI_Recv( vector, size, MPI_LONG, MPI_ANY_SOURCE, DATA,
+	      vector = (char*) calloc (size, sizeof *vector);
+	      rc = MPI_Recv( vector, size, MPI_CHAR, MPI_ANY_SOURCE, DATA,
 	           MPI_COMM_WORLD, &status );
-	      parallelMerge ( vector, size, height );
+	      parallelMerge (vector, size, height );
 	      MPI_Finalize();
 	      return 0;
 	   }
 	// Only the rank-0 process executes here.
-	   qsort( solo, size, sizeof *solo, compare );
+	   qsort(solo, size, sizeof *solo, compare );
 	   finish = MPI_Wtime();
-
+     
     // START OF CODE
     // END OF CODE
 

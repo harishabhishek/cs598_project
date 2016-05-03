@@ -261,17 +261,9 @@ int main(int argc, char** argv) {
 
 	      return 0;
 	   }
-	// Only the rank-0 process executes here.
+     finish = MPI_Wtime();
+     printf("Total TIme was: %.2f\n seconds", finish - start);
 
-     printf("HELLO1\n");
-    // START OF CODE
-    // END OF CODE
-     printf("Vector = %s Size = %d\n", vector, sizeof * vector);
-
-     int i;
-      for(i = 0; i< strlen(vector); i++){
-        printf("%c character\n", vector[i]);
-      }
     
     MPI_Finalize();
     

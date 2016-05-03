@@ -1,0 +1,11 @@
+8 processes mandates root height of 3
+200000000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 50000000
+Size = 1, 50000000
+Size = 1, 100000000
+Total TIme was: 6.84
+ secondsApplication 38042307 resources: utime ~873s, stime ~9s, Rss ~766800, inblocks ~426250, outblocks ~71273

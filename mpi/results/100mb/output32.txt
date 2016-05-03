@@ -1,0 +1,35 @@
+32 processes mandates root height of 5
+100000000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 6250000
+Size = 1, 6250000
+Size = 1, 6250000
+Size = 1, 6250000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 3125000
+Size = 1, 6250000
+Size = 1, 6250000
+Size = 1, 6250000
+Size = 1, 6250000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 50000000
+Total TIme was: 1.50
+ secondsApplication 38040334 resources: utime ~1803s, stime ~28s, Rss ~409340, inblocks ~222186, outblocks ~35615

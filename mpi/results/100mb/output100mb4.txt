@@ -1,0 +1,7 @@
+4 processes mandates root height of 2
+100000000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 50000000
+Total TIme was: 6.08
+ secondsApplication 38042127 resources: utime ~225s, stime ~4s, Rss ~377100, inblocks ~220549, outblocks ~35613

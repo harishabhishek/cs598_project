@@ -1,0 +1,4 @@
+2 processes mandates root height of 1
+1935228928
+Application 38070040 exit codes: 139
+Application 38070040 resources: utime ~7554s, stime ~99s, Rss ~31272776, inblocks ~62510436, outblocks ~17794

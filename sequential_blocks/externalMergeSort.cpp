@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <cstdlib>
 
 int main(int argc, char * argv[])
 {
@@ -14,9 +16,6 @@ int main(int argc, char * argv[])
 		std::cout << "Please provide file to sort on. ( ./externalMergeSort example.txt )\n";
 		return 0;
 	}
-
-	system("rm example1.txt");
-	system("cp example.txt example1.txt");
 
 	fp = fopen(argv[1], "r+");
 

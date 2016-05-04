@@ -5,6 +5,24 @@
 #include <string>
 #include <algorithm>
 #include <cstdlib>
+#include <stdlib.h>
+#include <sys/time.h>
+
+double lastTime;
+
+double getTime() {
+  timeval now;
+  gettimeofday(&now, NULL);
+  return ((double) now.tv_sec) + ((double) now.tv_usec)/1000000.;
+}
+void start () {
+  lastTime = getTime();
+} 
+
+double stop () {
+  double d = (getTime()-lastTime);
+  return d;
+} 
 
 int main(int argc, char * argv[])
 {

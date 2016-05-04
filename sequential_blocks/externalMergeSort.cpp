@@ -15,8 +15,8 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	//system("rm example.txt");
-	//system("cp example1.txt example.txt");
+	system("rm example1.txt");
+	system("cp example.txt example1.txt");
 
 	fp = fopen(argv[1], "r+");
 
@@ -37,6 +37,9 @@ int main(int argc, char * argv[])
    //int blockSize = 100000000; 
    int numberOfBlocks = len / blockSize;
    std::vector <char> buffer(blockSize);
+   std::vector <char> writeBuffer(blockSize);
+   writeBuffer[0] = 'r';
+   writeBuffer[blockSize -1 ] = '\0';
 
    std::cout << len << " " << blockSize << " " << numberOfBlocks << std::endl;
 
@@ -46,10 +49,10 @@ int main(int argc, char * argv[])
    while((x = fread((void *)&buffer[0], sizeof(char), blockSize, fp)) > 0)
    {
 	  	std::sort (buffer.begin(), buffer.end());
-	  	char * writeBuffer = (char *)&buffer[0];
+	  	char * write = (char *)&buffer[0];
 
 	  	fseek(fp, iter * blockSize, SEEK_SET);
-	  	fwrite( writeBuffer, sizeof(char), blockSize, fp);
+	  	fwrite( write, sizeof(char), blockSize, fp);
 	  	fseek(fp, (++iter)*blockSize, SEEK_SET);
    }
 
@@ -72,6 +75,8 @@ int main(int argc, char * argv[])
    	fread((void *)&buffer[i*shardSize], sizeof(char), shardSize, fp);
    }
 
+   int writeBufferCount = 0;
+
    while (count < len)
    {
      int found = -1;
@@ -84,8 +89,13 @@ int main(int argc, char * argv[])
          min = buffer[j*shardSize + indexes[j]];
        }  
      }    
-     fwrite((void *)&buffer[found*shardSize + indexes[found]], sizeof(char), 1, writer);
+
+     writeBuffer[writeBufferCount] = buffer[found*shardSize + indexes[found]];
+
+     //printf("%d WB = %s %c\n", found, (char *)&writeBuffer[0], buffer[found*shardSize + indexes[found]]);
+     //fwrite((void *)&buffer[found*shardSize + indexes[found]], sizeof(char), 1, writer);
      indexes[found]++;
+     writeBufferCount++;
 
      if (indexes[found] >= shardSize)
      {
@@ -97,6 +107,13 @@ int main(int argc, char * argv[])
 	       fread((void *)&buffer[found*shardSize], sizeof(char), shardSize, fp);
 	       indexes[found] = 0;
 	     }
+     }
+
+     if (writeBufferCount >= blockSize)
+     {
+      //printf("%d WB = %s\n", writeBufferCount, (char *)&writeBuffer[0]);
+      fwrite((void *)&writeBuffer[0], sizeof(char), blockSize, writer);
+      writeBufferCount = 0;
      }
      count++;
 

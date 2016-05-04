@@ -1,0 +1,5 @@
+32 processes mandates root height of 5
+-1179869184
+Application 38069804 exit codes: 134
+Application 38069804 exit signals: Killed
+Application 38069804 resources: utime ~10524s, stime ~56s, Rss ~21584, inblocks ~14785, outblocks ~35591

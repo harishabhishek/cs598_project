@@ -1,0 +1,5 @@
+4 processes mandates root height of 2
+1935228928
+Application 38070286 exit codes: 139
+Application 38070286 exit signals: Killed
+Application 38070286 resources: utime ~8689s, stime ~99s, Rss ~31277828, inblocks ~62517549, outblocks ~35588

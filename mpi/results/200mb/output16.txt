@@ -1,0 +1,19 @@
+16 processes mandates root height of 4
+200000000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 12500000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 25000000
+Size = 1, 50000000
+Size = 1, 50000000
+Size = 1, 100000000
+Total TIme was: 4.62
+ secondsApplication 38040811 resources: utime ~1734s, stime ~36s, Rss ~780780, inblocks ~404600, outblocks ~17796

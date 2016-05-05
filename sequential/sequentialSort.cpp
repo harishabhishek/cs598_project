@@ -69,6 +69,8 @@ int main(int argc, char * argv[])
 
    writer = fopen("temp.txt", "w");
    fwrite(buffer, sizeof(char), len, writer);
+
+   free(buffer);
    fclose(fp);
    fclose(writer);
 

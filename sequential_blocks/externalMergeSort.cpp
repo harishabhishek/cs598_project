@@ -24,6 +24,11 @@ double stop () {
   return d;
 } 
 
+int compare (const void * a, const void * b)
+{
+   return ( *(char*)a - *(char*)b );
+}
+
 int main(int argc, char * argv[])
 {
 	FILE * fp;
@@ -53,8 +58,12 @@ int main(int argc, char * argv[])
    int blockSize = len / 10; // Later we can fix this number
    //int blockSize = 100000000; 
    int numberOfBlocks = len / blockSize;
-   std::vector <char> buffer(blockSize);
-   std::vector <char> writeBuffer(blockSize);
+   //std::vector <char> buffer(blockSize);
+   //std::vector <char> writeBuffer(blockSize);
+
+   char * buffer = (char *)malloc(blockSize + 1);
+   char * writeBuffer = (char *)malloc(blockSize + 1);
+
    writeBuffer[0] = 'r';
    writeBuffer[blockSize -1 ] = '\0';
 
@@ -65,9 +74,9 @@ int main(int argc, char * argv[])
 
    start();
    
-   while((x = fread((void *)&buffer[0], sizeof(char), blockSize, fp)) > 0)
+   while((x = fread(buffer, sizeof(char), blockSize, fp)) > 0)
    {
-	  	std::sort (buffer.begin(), buffer.end());
+	  	qsort(buffer, blockSize, sizeof(char), compare);
 	  	char * write = (char *)&buffer[0];
 
 	  	fseek(fp, iter * blockSize, SEEK_SET);
@@ -91,7 +100,7 @@ int main(int argc, char * argv[])
    	indexes[i] = 0;
    	blockCount[i] = 0;
    	fseek(fp, i*blockSize, SEEK_SET);
-   	fread((void *)&buffer[i*shardSize], sizeof(char), shardSize, fp);
+   	fread( &buffer[i*shardSize], sizeof(char), shardSize, fp);
    }
 
    int writeBufferCount = 0;
@@ -123,7 +132,7 @@ int main(int argc, char * argv[])
 
        if(blockCount[found] < blockSize/shardSize)
        {
-	       fread((void *)&buffer[found*shardSize], sizeof(char), shardSize, fp);
+	       fread( &buffer[found*shardSize], sizeof(char), shardSize, fp);
 	       indexes[found] = 0;
 	     }
      }
@@ -131,7 +140,7 @@ int main(int argc, char * argv[])
      if (writeBufferCount >= blockSize)
      {
       //printf("%d WB = %s\n", writeBufferCount, (char *)&writeBuffer[0]);
-      fwrite((void *)&writeBuffer[0], sizeof(char), blockSize, writer);
+      fwrite(writeBuffer, sizeof(char), blockSize, writer);
       writeBufferCount = 0;
      }
      count++;

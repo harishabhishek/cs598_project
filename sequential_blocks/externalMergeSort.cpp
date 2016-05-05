@@ -147,5 +147,9 @@ int main(int argc, char * argv[])
 
    }
 
+   free(indexes);
+   free(blockCount);
+   free(buffer);
+   free(writeBuffer);
     printf("Time = %.4f\n", stop());
 }

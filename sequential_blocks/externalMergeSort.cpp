@@ -62,6 +62,8 @@ int main(int argc, char * argv[])
 
    int x;
    int iter = 0;
+
+   start();
    
    while((x = fread((void *)&buffer[0], sizeof(char), blockSize, fp)) > 0)
    {
@@ -135,4 +137,6 @@ int main(int argc, char * argv[])
      count++;
 
    }
+
+    printf("Time = %.4f\n", stop());
 }

@@ -1,0 +1,14 @@
+#! /bin/bash
+#PBS -q normal
+#PBS -A babq
+#PBS -N externalMergeSort
+#PBS -l nodes=1:ppn=16:xe
+#PBS -l walltime=02:00:00
+cd $PBS_O_WORKDIR
+
+./externalMergeSort 100mb.txt > output_100mb.txt
+./externalMergeSort 200mb.txt > output_200mb.txt
+./externalMergeSort 500mb.txt > output_500mb.txt
+./externalMergeSort 1gb.txt > output_1gb.txt
+./externalMergeSort 2gb.txt > output_2gb.txt
+./externalMergeSort 4gb.txt > output_4gb.txt

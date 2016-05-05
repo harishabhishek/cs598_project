@@ -24,6 +24,11 @@ double stop () {
   return d;
 } 
 
+int compare (const void * a, const void * b)
+{
+   return ( *(char*)a - *(char*)b );
+}
+
 int main(int argc, char * argv[])
 {
 	FILE * fp;
@@ -47,23 +52,23 @@ int main(int argc, char * argv[])
    int len = ftell(fp); //length of file in bytes
    fseek(fp, 0, SEEK_SET);
 
-   std::vector <char> buffer(len);
+   char * buffer = (char *)malloc(len);
 
    std::cout << len << " " << std::endl;
 
    int x;
    int iter = 0;
     
-   fread((void *)&buffer[0], sizeof(char), len , fp);
+   fread(buffer, sizeof(char), len , fp);
 
    start();
 
-   std::sort (buffer.begin(), buffer.end());
+   qsort(buffer, len, sizeof(char), compare);
    
    std::cout << "Time = " << stop() << std::endl;
 
    writer = fopen("temp.txt", "w");
-   fwrite((void *)&buffer[0], sizeof(char), len, writer);
+   fwrite(buffer, sizeof(char), len, writer);
    fclose(fp);
    fclose(writer);
 
